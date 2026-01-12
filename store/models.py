@@ -11,9 +11,10 @@ class Product(models.Model):
     description = models.TextField(verbose_name="รายละเอียด")
     price = models.IntegerField(verbose_name="ราคา (บาท)")
     image = models.ImageField(upload_to='products/', verbose_name="รูปภาพสินค้า")
-    script_file = models.FileField(upload_to='scripts/', blank=True, null=True, verbose_name="ไฟล์สคริปต์ (ถ้ามี)")
+    script_file = models.FileField(upload_to='script_files/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+
 
     def __str__(self):
         return self.name
@@ -22,6 +23,8 @@ class Order(models.Model):
     customer_name = models.CharField(max_length=200, verbose_name="ชื่อลูกค้า/Discord")
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ยอดรวม")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="เวลาสั่งซื้อ")
+    paid = models.BooleanField(default=False)
+    slip_image = models.ImageField(upload_to='payment_slips/', blank=True, null=True, verbose_name="สลิปการชำระเงิน")
 
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name}"

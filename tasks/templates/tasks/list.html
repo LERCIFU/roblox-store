@@ -1,27 +1,276 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
+
 <head>
-    <title>Django To-Do List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            /* กันไม่ให้มี Scroll แนวนอน */
+        }
+
+        /* --- SIDEBAR STYLE --- */
+        .sidebar {
+            min-height: 100vh;
+            background: white;
+            border-right: 1px solid #eee;
+            padding: 30px 20px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-card {
+            background: #f0f8ff;
+            /* สีฟ้าจางๆ */
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #eef2ff;
+            color: #0d6efd;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .btn-logout {
+            margin-top: auto;
+            /* ดันปุ่มไปล่างสุด */
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background-color: #fff5f5;
+            color: #dc3545;
+        }
+
+        /* --- MAIN CONTENT STYLE (ของเดิม) --- */
+        .clean-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            border: none;
+        }
+
+        /* ... (CSS อื่นๆ ของเดิมยังใช้ได้) ... */
+        .table th {
+            border-top: none;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .badge-clean {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .badge-high {
+            background-color: #ff3e61;
+            color: white;
+        }
+
+        .badge-medium {
+            background-color: #ffa500;
+            color: white;
+        }
+
+        .badge-low {
+            background-color: #00c853;
+            color: white;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>รายการที่ต้องทำของฉัน</h1>
 
-    <form method="POST" action="">
-        {% csrf_token %} <input type="text" name="title" placeholder="พิมพ์สิ่งที่จะทำ..." required>
-        <button type="submit">บันทึก</button>
-    </form>
+    <div class="container-fluid">
+        <div class="row">
 
-    <hr>
+            <div class="col-md-3 col-lg-2 sidebar d-flex flex-column">
 
-   <ul>
-    {% for task in tasks %}
-        <li>
-            {{ task.title }} 
-            <a href="{% url 'delete' task.id %}" style="color: red; margin-left: 10px;">[ลบ]</a>
-        </li>
-    {% empty %}
-        <li>ยังไม่มีรายการในตอนนี้</li>
-    {% endfor %}
-</ul>
+                <div class="sidebar-brand">
+                    <i class="bi bi-snow2 me-2"></i> Help Me! (Am Freeze)
+                </div>
+
+                <div class="user-card">
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=0d6efd&color=fff"
+                        class="avatar">
+                    <div style="overflow: hidden;">
+                        <div class="fw-bold text-truncate">{{ request.user.username }}</div>
+                        <small class="text-muted">Online</small>
+                    </div>
+                </div>
+
+                <nav class="nav flex-column mb-auto">
+                    <div class="text-muted small fw-bold mb-2 ps-2">TASKS</div>
+
+                    <a href="{% url 'task' %}" class="nav-link {% if not request.GET.filter %}active{% endif %}">
+                        <i class="bi bi-grid"></i> All Tasks
+                    </a>
+
+                    <a href="{% url 'task' %}?filter=mine"
+                        class="nav-link {% if request.GET.filter == 'mine' %}active{% endif %}">
+                        <i class="bi bi-person-check"></i> My Tasks
+                    </a>
+
+                    <a href="{% url 'task' %}?filter=high"
+                        class="nav-link {% if request.GET.filter == 'high' %}active{% endif %}">
+                        <i class="bi bi-fire"></i> High Priority
+                    </a>
+
+                    <a href="{% url 'task' %}?filter=completed"
+                        class="nav-link {% if request.GET.filter == 'completed' %}active{% endif %}">
+                        <i class="bi bi-check-circle"></i> Completed
+                    </a>
+
+                    <div class="text-muted small fw-bold mb-2 ps-2 mt-4">SYSTEM</div>
+                    <a href="{% url 'home' %}" class="nav-link">
+                        <i class="bi bi-house-door"></i> Back to Hub
+                    </a>
+                </nav>
+
+                <a href="#" class="nav-link btn-logout mt-5">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+
+            <div class="col-md-9 col-lg-10 p-4 p-md-5 bg-light">
+
+                <h3 class="fw-bold mb-4 text-secondary">Task Board</h3>
+
+                <div class="card clean-card mb-4">
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Team Member</th>
+                                    <th>Task</th>
+                                    <th>Priority</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            {% if task.assignee %}
+                                            <img src="https://ui-avatars.com/api/?name={{ task.assignee.username }}&background=random"
+                                                class="avatar">
+                                            <span class="fw-medium">{{ task.assignee.username }}</span>
+                                            {% else %}
+                                            <img src="https://ui-avatars.com/api/?name=Unknown" class="avatar">
+                                            <span class="text-muted">ไม่ระบุ</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if task.completed %}
+                                        <span class="text-muted text-decoration-line-through">{{ task.title }}</span>
+                                        {% else %}
+                                        {{ task.title }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.priority == 'HIGH' %}
+                                        <span class="badge badge-clean badge-high">High</span>
+                                        {% elif task.priority == 'MEDIUM' %}
+                                        <span class="badge badge-clean badge-medium">Medium</span>
+                                        {% else %}
+                                        <span class="badge badge-clean badge-low">Low</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a href="{% url 'complete_task' task.id %}" class="text-decoration-none me-3"
+                                            style="color: #00c853;">
+                                            {% if task.completed %}<i class="bi bi-arrow-counterclockwise fs-5"></i>{%
+                                            else %}<i class="bi bi-check-lg fs-5"></i>{% endif %}
+                                        </a>
+                                        <a href="{% url 'delete_task' task.id %}" class="text-decoration-none"
+                                            style="color: #ff3e61;" onclick="return confirm('Delete?');">
+                                            <i class="bi bi-trash-fill fs-5"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">No tasks found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card clean-card p-3">
+                    <form method="POST" class="row g-2 align-items-center">
+                        {% csrf_token %}
+                        <div class="col-auto"><span class="fw-bold text-muted small">NEW:</span></div>
+                        <div class="col">
+                            <input type="text" name="title" class="form-control border-0 bg-light"
+                                placeholder="Type a new task..." required>
+                        </div>
+                        <div class="col-auto">
+                            <select name="priority" class="form-select border-0 bg-light text-muted"
+                                style="font-size: 0.9rem;">
+                                <option value="HIGH">High Priority</option>
+                                <option value="MEDIUM" selected>Medium</option>
+                                <option value="LOW">Low</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary px-4 fw-bold"
+                                style="font-size: 0.85rem;">ADD</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

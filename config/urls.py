@@ -19,15 +19,18 @@ from django.urls import path, include
 from django.conf import settings  # ต้องมีอันนี้
 from django.conf.urls.static import static # ต้องมีอันนี้
 
+
 admin.site.site_header = "Roblox Store Manager"       # ข้อความตรงแถบสีฟ้าด้านบน
 admin.site.site_title = "Roblox Store Admin Portal"   # ชื่อตรง Tab ของ Browser
 admin.site.index_title = "ยินดีต้อนรับสู่ระบบจัดการร้าน"  # ข้อความทักทายหน้าแรก
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('tasks.urls')),
     path('store/', include('store.urls')),
     path('accounts/', include('accounts.urls')),
+    path('tasks/', include('tasks.urls')),
+    path('roblox/', include('roblox_showcase.urls')),
+    path('', include('pages.urls')),
 ]
 
 # ย้ายออกมาไว้นอก urlpatterns ตามที่ผมแนะนำไปคราวก่อน

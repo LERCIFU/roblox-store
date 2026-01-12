@@ -18,7 +18,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger btn-lg me-2">🗑️ ลบทิ้งเลย</button>
-                <a href="{% url 'product_list' %}" class="btn btn-secondary btn-lg">ยกเลิก</a>
+                <a href="{% url 'store:product_list' %}" class="btn btn-secondary btn-lg">ยกเลิก</a>
             </form>
         </div>
     </div>

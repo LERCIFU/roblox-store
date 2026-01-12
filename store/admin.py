@@ -1,15 +1,20 @@
 from django.contrib import admin
-from .models import Product # ดึงแบบแปลนสินค้ามา
 from .models import Product, Order, OrderItem
+from django.utils.html import format_html
 
-admin.site.register(Product)
-
-class OrderItemInline(admin.TabularInline):
-    model = OrderItem
-    extra = 0 # ไม่ต้องโชว์ช่องว่างๆ
-
+# 1. ปรับแต่งหน้า Admin ของ Order
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer_name', 'total_price', 'created_at'] # โชว์คอลัมน์สำคัญ
-    inlines = [OrderItemInline] # เอาตารางรายการของยัดเข้าไปในหน้า Order
+    list_display = ('id', 'customer_name', 'total_price', 'paid', 'show_slip', 'created_at')
+    list_editable = ('paid',) # ติ๊ก Paid ได้เลยจากหน้าแรก
 
-admin.site.register(Order, OrderAdmin)
+    def show_slip(self, obj):
+        if obj.slip_image:
+            # สร้างลิงก์ให้กดดูรูปได้
+            return format_html('<a href="{}" target="_blank">View Slip</a>', obj.slip_image.url)
+        return "No Slip"
+    show_slip.short_description = "Payment Slip"
+
+# 2. ลงทะเบียน Model (เช็คว่ามีอย่างละ 1 บรรทัดเท่านั้น!)
+admin.site.register(Product)
+admin.site.register(Order, OrderAdmin) # อันนี้ใช้คู่กับ Class ข้างบน
+admin.site.register(OrderItem)

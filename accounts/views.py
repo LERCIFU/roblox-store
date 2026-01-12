@@ -8,7 +8,7 @@ def signup(request):
         if form.is_valid():
             user = form.save() # บันทึกสมาชิกลง Database
             login(request, user) # สมัครเสร็จให้ Login อัตโนมัติเลย
-            return redirect('product_list') # ส่งไปหน้าร้านค้า
+            return redirect('store:product_list') # ส่งไปหน้าร้านค้า
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})

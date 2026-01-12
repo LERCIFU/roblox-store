@@ -52,14 +52,14 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white text-end py-3">
-                    <a href="{% url 'clear_cart' %}" class="btn btn-outline-danger btn-sm">🗑️ ล้างตะกร้า</a>
-                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-sm">← เลือกซื้อเพิ่ม</a>
+                    <a href="{% url 'store:clear_cart' %}" class="btn btn-outline-danger btn-sm">🗑️ ล้างตะกร้า</a>
+                    <a href="{% url 'store:product_list' %}" class="btn btn-outline-secondary btn-sm">← เลือกซื้อเพิ่ม</a>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4">
-            <form action="{% url 'checkout' %}" method="POST">
+            <form action="{% url 'store:checkout' %}" method="POST">
                 {% csrf_token %}
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-dark text-white py-3">
@@ -101,7 +101,7 @@
             <div class="mb-3" style="font-size: 5rem;">🛒</div>
             <h3>ตะกร้าว่างเปล่า</h3>
             <p class="text-muted">ยังไม่มีสินค้าในตะกร้าเลย ลองไปดูสคริปต์เจ๋งๆ ก่อนไหม?</p>
-            <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">ไปหน้าร้านค้า</a>
+            <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-3">ไปหน้าร้านค้า</a>
         </div>
     {% endif %}
 

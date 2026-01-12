@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tasks',
     'store',
     'accounts',
+    'pages',
+    'tasks',
+    'roblox_showcase',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.context_processors.cart_count',
             ],
         },
     },
@@ -123,5 +126,5 @@ import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_REDIRECT_URL = 'product_list' # Login เสร็จให้ไปหน้าร้าน
+LOGIN_REDIRECT_URL = 'store:store' # Login เสร็จให้ไปหน้าร้าน
 LOGOUT_REDIRECT_URL = 'login'       # Logout เสร็จให้กลับมาหน้า Login
