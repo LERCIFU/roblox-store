@@ -127,5 +127,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_REDIRECT_URL = 'store:store' # Login เสร็จให้ไปหน้าร้าน
-LOGOUT_REDIRECT_URL = 'login'       # Logout เสร็จให้กลับมาหน้า Login
+LOGIN_REDIRECT_URL = '/' # Login เสร็จให้ไปหน้าร้าน
+LOGOUT_REDIRECT_URL = '/'       # Logout เสร็จให้กลับมาหน้า Login
