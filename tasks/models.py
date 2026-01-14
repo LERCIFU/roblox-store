@@ -1,24 +1,46 @@
-from django.db import migrations, models
-from django.contrib.auth.models import User
-class Task(models.Model):
-    title = models.CharField(max_length=200) # ชื่อหัวข้อ
-    completed = models.BooleanField(default=False) # ทำเสร็จหรือยัง?
+from django.db import models
+from django.utils import timezone
 
-    PRIORITY_CHOICES = [
-        ('HIGH', 'High Priority 🔥'),    # เก็บค่า HIGH, โชว์คำว่า High Priority 🔥
-        ('MEDIUM', 'Medium Priority ⚠️'),
-        ('LOW', 'Low Priority ☕'),
+# 1. สร้างกล่อง Sprint (เช่น "Sprint #1: Setup System")
+class Sprint(models.Model):
+    name = models.CharField(max_length=200, verbose_name="Sprint Name")
+    goal = models.TextField(blank=True, null=True, verbose_name="Sprint Goal")
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=False, verbose_name="Is Current Sprint?")
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+# 2. อัปเกรด Task ให้รองรับระบบ Kanban
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ('TODO', 'To Do'),          # งานที่จะทำ
+        ('IN_PROGRESS', 'Doing'),   # กำลังทำ
+        ('DONE', 'Done'),           # เสร็จแล้ว
     ]
     
-    priority = models.CharField(
-        max_length=10,
-        choices=PRIORITY_CHOICES,
-        default='MEDIUM', # ถ้าไม่เลือก ให้ถือว่ากลางๆ ไว้ก่อน
-    )
+    PRIORITY_CHOICES = [
+        ('L', 'Low'),
+        ('M', 'Medium'),
+        ('H', 'High'),
+    ]
 
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # 👇 พระเอกของเรา: ผูกงานกับ Sprint (ถ้าเป็น Null แปลว่าเป็น Backlog)
+    sprint = models.ForeignKey(Sprint, on_delete=models.SET_NULL, null=True, blank=True, related_name='tasks')
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='TODO')
+    priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES, default='M')
+    
+    # Story Points (ความยากง่ายของงาน 1, 2, 3, 5, 8) - เอาไว้ฝึกประเมินงาน
+    story_points = models.IntegerField(default=1)
 
-    assignee = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    source = models.CharField(max_length=200, blank=True, null=True, verbose_name="From Sprint")
 
     def __str__(self):
         return self.title
