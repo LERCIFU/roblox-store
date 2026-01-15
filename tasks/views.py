@@ -113,7 +113,7 @@ def add_sprint(request):
     else:
         form = SprintForm()
 
-    return render(request, 'tasks/task_form.html', {
+    return render(request, 'tasks/sprint_form.html', {
         'form': form, 
         'title': '🚀 Start New Sprint',
         'button_text': 'Start Sprint'

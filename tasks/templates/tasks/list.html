@@ -56,30 +56,39 @@
 <body>
 
     <nav class="navbar navbar-expand-lg glass-nav mb-4 py-3 shadow-sm">
-        <div class="container-fluid px-4">
-            <div class="d-flex align-items-center">
-                <span class="navbar-brand fw-bold fs-4 text-primary me-4">
-                    <i class="bi bi-kanban-fill me-2"></i>Sprint Board
-                </span>
-            </div>
+        <div class="container-fluid px-3 px-md-4">
             
-            <div class="d-flex align-items-center gap-2">
-                <a href="/" class="btn btn-outline-secondary btn-modern shadow-sm me-2">
-                    <i class="bi bi-grid-fill me-1"></i> Hub
+            <div class="d-flex align-items-center">
+                <a href="/" class="btn btn-sm btn-outline-secondary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                    <i class="bi bi-grid-fill"></i>
                 </a>
-
-                <form method="get" class="d-flex align-items-center">
-                    <select name="sprint" class="form-select form-select-glass fw-bold text-dark" style="min-width: 200px;" onchange="this.form.submit()">
-                        <option value="" disabled selected>📂 Switch Sprint...</option>
-                        <option value="" class="fw-bold text-primary">⚡ Current Active</option>
-                        <option disabled>──────────</option>
-                        {% for s in all_sprints %}
-                            <option value="{{ s.id }}" {% if active_sprint.id == s.id %}selected{% endif %}>{{ s.name }} {% if s.is_active %}(Active){% endif %}</option>
-                        {% endfor %}
-                    </select>
-                </form>
-                <a href="{% url 'tasks:add_sprint' %}" class="btn btn-warning btn-modern text-dark shadow-sm"><i class="bi bi-rocket-takeoff-fill"></i> New Sprint</a>
+                <span class="navbar-brand fw-bold fs-4 text-primary m-0">Sprint Board</span>
             </div>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarContent">
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center ms-auto gap-3">
+                    
+                    <form method="get" class="d-flex align-items-center w-100">
+                        <select name="sprint" class="form-select form-select-glass fw-bold text-dark w-100" onchange="this.form.submit()">
+                            <option value="" disabled selected>📂 Switch Sprint...</option>
+                            <option value="" class="fw-bold text-primary">⚡ Current Active</option>
+                            <option disabled>──────────</option>
+                            {% for s in all_sprints %}
+                                <option value="{{ s.id }}" {% if active_sprint.id == s.id %}selected{% endif %}>{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+
+                    <a href="{% url 'tasks:add_sprint' %}" class="btn btn-warning btn-modern text-dark shadow-sm w-100">
+                        <i class="bi bi-rocket-takeoff-fill"></i> New Sprint
+                    </a>
+                </div>
+            </div>
+
         </div>
     </nav>
 
