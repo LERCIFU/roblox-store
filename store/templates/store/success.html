@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -16,29 +17,29 @@
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh;">
 
-    <div class="card shadow-lg border-0 text-center p-5" style="max-width: 500px; border-radius: 15px;">
-        <div class="mb-4">
-            <div class="success-icon">✅</div>
-        </div>
-        <h2 class="mb-3 fw-bold text-dark">สั่งซื้อสำเร็จ!</h2>
-        <p class="text-muted mb-4">
-            ขอบคุณที่อุดหนุนครับ! ระบบได้ส่งข้อมูลการสั่งซื้อไปยังแอดมินเรียบร้อยแล้ว
-        </p>
+    <div class="container text-center mt-5">
+    <div class="card shadow-lg p-5 mx-auto border-0" style="max-width: 600px; border-radius: 20px;">
         
-        <div class="alert alert-warning text-start" role="alert">
-            <h6 class="alert-heading fw-bold">📢 สิ่งที่ต้องทำต่อ:</h6>
-            <p class="mb-0 small">กรุณาทัก Discord เพื่อแจ้งชำระเงิน หรือรอแอดมินติดต่อกลับภายใน 24 ชม.</p>
-        </div>
+        <h2 class="fw-bold mt-3 mb-2 text-dark">สั่งซื้อสำเร็จ!</h2>
+        <p class="text-muted">ขอบคุณที่อุดหนุนครับ! ระบบได้ส่งข้อมูลการสั่งซื้อไปยังแอดมินเรียบร้อยแล้ว</p>
 
-        <div class="d-grid gap-2">
-            <a href="https://discord.gg/trtfq2ZH32" target="_blank" class="btn btn-primary">
-                💬 ไปที่ Discord
-            </a>
-            <a href="{% url 'store:product_list' %}" class="btn btn-outline-secondary">
-                กลับหน้าร้าน
-            </a>
+        <div class="alert alert-warning mt-4 p-4" role="alert" style="border-radius: 15px;">
+            <h5 class="alert-heading fw-bold">📢 สิ่งที่ต้องทำต่อ:</h5>
+            <hr>
+            <p class="mb-3">สแกน QR Code ด้านล่างเพื่อชำระเงิน</p>
+            
+            <img src="{% static 'store/payment_qr.jpg' %}" alt="QR Code รับเงิน" class="img-fluid rounded shadow-sm mb-3" style="max-width: 250px;">
+            
+            <p class="mb-0 small text-muted">
+                เมื่อโอนแล้ว กรุณากดปุ่ม 
+                <a href="{% url 'store:my_orders' %}" class="fw-bold text-decoration-none text-primary">
+                    "แจ้งชำระเงิน"
+                </a> 
+                เพื่ออัปโหลดสลิปการโอนเงินครับ
+            </p>
         </div>
-    </div>
+        </div>
+</div>
 
 </body>
 </html>
