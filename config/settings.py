@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage', 
+    'cloudinary',
     'store',
     'accounts',
     'pages',
@@ -127,8 +129,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'drgrlky35'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '597645184432967'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', '5wyBzKrHccxgW2ShMozid4MBcAQ'),
+}
+
+# บอก Django ว่าถ้าเป็นไฟล์ Media (รูปอัปโหลด) ให้ไปฝากไว้ที่ Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 LOGIN_REDIRECT_URL = '/' # Login เสร็จให้ไปหน้าร้าน
 LOGOUT_REDIRECT_URL = '/'       # Logout เสร็จให้กลับมาหน้า Login
+

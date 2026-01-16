@@ -99,7 +99,6 @@ def checkout(request):
             customer_name = request.POST.get('customer_name')
 
         if not cart:
-            # ✅ แก้เป็น store:product_list
             return redirect('store:product_list')
 
         total_price = 0
